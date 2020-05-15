@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include "math.h"
 #include <iostream>
 using namespace std;
 #define MAX_WIDTH 16
