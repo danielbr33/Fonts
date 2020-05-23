@@ -138,11 +138,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="bitoperations.cpp" />
+    <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="Fonts.cpp" />
     <ClCompile Include="Letter.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bitoperations.h" />
+    <ClInclude Include="Buffer.h" />
     <ClInclude Include="Fonts.h" />
     <ClInclude Include="Letter.h" />
   </ItemGroup>

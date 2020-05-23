@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Fonts.h"
+#include "Buffer.h"
 #include "bitoperations.h"
 
 using namespace std;
@@ -18,8 +18,8 @@ void printTest(){
 }
 
 int main() {
-	Fonts font;
-	font.print();
+	Buffer buffer;
+	buffer.print();
 
 	cout << endl;
 
@@ -35,7 +35,6 @@ int main() {
 		clearBit(test, i);
 		printTest();
 	}
-
 
 	return 0;
 }
