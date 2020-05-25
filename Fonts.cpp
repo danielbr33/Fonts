@@ -210,3 +210,10 @@ void Fonts::createFont7x10() {
 	for (uint8_t i = 0; i < 95; i++)
 		Font_7x10[i] = new Letter(&Font7x10[i*height], height, width);
 }
+
+uint16_t* Fonts::getLetter6x8(uint8_t letter) {
+	return Font_6x8[letter - 32]->getLetter();
+}
+uint16_t* Fonts::getLetter7x10(uint8_t letter) {
+	return Font_7x10[letter - 32]->getLetter();
+}

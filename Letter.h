@@ -8,9 +8,10 @@ class Letter{
 public:
 	Letter(uint16_t* tab, uint8_t height, uint8_t width);
 	~Letter();
+	uint16_t* getLetter();
 private:
 	uint8_t width;
 	uint8_t height;
-	uint16_t* letter;
+	uint16_t* letter_tab;
 };
 

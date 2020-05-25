@@ -30,3 +30,9 @@ Buffer::~Buffer(){
 		delete[] table[i];
 	delete[] table;
 }
+
+void Buffer::addLetter(uint8_t letter, uint8_t height, uint8_t coord_X, uint8_t coord_Y) {
+	for (uint8_t i = 0; i < height; i++) {
+	//	table[i + coord_Y][coord_X] |=
+	}
+}
