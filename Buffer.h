@@ -7,8 +7,12 @@ public:
 	~Buffer();
 	void addLetter(uint8_t letter, uint8_t height, uint8_t coord_X, uint8_t coord_Y);
 private:
-	int** table;
+	uint64_t* table;
 	int width;
 	int height;
+	Fonts* Font_6x8;
+	Fonts* Font_7x10;
+	uint8_t font6x8_ready;
+	uint8_t font7x10_ready;
 };
 

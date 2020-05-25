@@ -1,11 +1,12 @@
 #include "Buffer.h"
 #include <iostream>
+#include "bitoperations.h"
 using namespace std;
 
 void Buffer::print() {
-	for (int i = 0; i < height; i++) {
-		for (int j = 0; j < width; j++) {
-			if (table[i][j] == 0)
+	for (uint8_t i = 0; i < this->height; i++) {
+		for (uint8_t j = width; j > 0; j--) {
+			if (getBit(table[i], j-1) == 0)
 				cout << "-";
 			else
 				cout << "+";
@@ -17,22 +18,37 @@ void Buffer::print() {
 Buffer::Buffer(){
 	this->height = 32;
 	this->width = 64;
-	table = new int* [height];
-	for (int i = 0; i < height; i++)
-		table[i] = new int[width];
-	for (int i = 0; i < height; i++)
-		for (int j = 0; j < width; j++)
-			table[i][j] = 0;
+	table = new uint64_t [height];
+	for (uint8_t i = 0; i < height; i++)
+		table[i] = 0;
+	font6x8_ready = 0;
+	font7x10_ready = 0;
 }
 
 Buffer::~Buffer(){
-	for (int i = 0; i < height; i++)
-		delete[] table[i];
 	delete[] table;
 }
 
 void Buffer::addLetter(uint8_t letter, uint8_t height, uint8_t coord_X, uint8_t coord_Y) {
-	for (uint8_t i = 0; i < height; i++) {
-	//	table[i + coord_Y][coord_X] |=
+	if (height == 8) {
+		if (font6x8_ready == 0) {
+			Font_6x8 = new Fonts();
+			Font_6x8->createFont6x8();
+			font6x8_ready = 1;
+		}
+		for (uint8_t i = 0; i < height; i++) {
+			table[i + coord_Y] |= Font_6x8->getLetter6x8(letter)[i];
+			cout<< Font_6x8->getLetter6x8(letter)[i];
+		}
+	}
+	else if (height == 10) {
+		if (font7x10_ready == 0) {
+			Font_7x10 = new Fonts();
+			Font_7x10->createFont6x8();
+			font7x10_ready = 1;
+		}
+		for (uint8_t i = 0; i < height; i++) {
+			table[i + coord_Y] |= Font_7x10->getLetter7x10(letter)[i];
+		}
 	}
 }
