@@ -199,16 +199,18 @@ void Fonts::createFont6x8() {
 	uint8_t height = 8;
 	uint8_t width = 6;
 	Font_6x8 = new Letter* [95];
-	for (uint8_t i = 0; i < 95; i++)
-		Font_6x8[i] = new Letter(&Font6x8[i*height], height, width);
+	for (uint8_t i = 0; i < 95; i++) {
+		Font_6x8[i] = new Letter(&Font6x8[i * height], height, width);
+	}
 }
 
 void Fonts::createFont7x10() {
 	uint8_t height = 10;
 	uint8_t width = 7;
 	Font_7x10 = new Letter* [95];
-	for (uint8_t i = 0; i < 95; i++)
-		Font_7x10[i] = new Letter(&Font7x10[i*height], height, width);
+	for (uint8_t i = 0; i < 95; i++) {
+		Font_7x10[i] = new Letter(&Font7x10[i * height], height, width);
+	}
 }
 
 uint16_t* Fonts::getLetter6x8(uint8_t letter) {

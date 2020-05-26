@@ -37,10 +37,10 @@ void Buffer::addLetter(uint8_t letter, uint8_t height, uint8_t coord_X, uint8_t 
 			font6x8_ready = 1;
 		}
 		for (uint8_t i = 0; i < height; i++) {
-			table[i + coord_Y] |= Font_6x8->getLetter6x8(letter)[i];
-			cout<< Font_6x8->getLetter6x8(letter)[i];
+			table[i + coord_Y] |= (uint64_t)Font_6x8->getLetter6x8(letter)[i];
 		}
 	}
+
 	else if (height == 10) {
 		if (font7x10_ready == 0) {
 			Font_7x10 = new Fonts();
