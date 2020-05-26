@@ -37,7 +37,7 @@ void Buffer::addLetter(uint8_t letter, uint8_t height, uint8_t coord_X, uint8_t 
 			font6x8_ready = 1;
 		}
 		for (uint8_t i = 0; i < height; i++) {
-			table[i + coord_Y] |= (uint64_t)Font_6x8->getLetter6x8(letter)[i];
+			table[i + coord_Y] |= (Font_6x8->getLetter6x8(letter)[i] << 14 );
 		}
 	}
 
@@ -48,7 +48,7 @@ void Buffer::addLetter(uint8_t letter, uint8_t height, uint8_t coord_X, uint8_t 
 			font7x10_ready = 1;
 		}
 		for (uint8_t i = 0; i < height; i++) {
-			table[i + coord_Y] |= Font_7x10->getLetter7x10(letter)[i];
+			table[i + coord_Y] |= (Font_7x10->getLetter7x10(letter)[i] << (64-16-coord_X));
 		}
 	}
 }

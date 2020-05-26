@@ -10,8 +10,12 @@ public:
 	void createFont7x10();
 	uint16_t* getLetter6x8(uint8_t letter);
 	uint16_t* getLetter7x10(uint8_t letter);
+	uint8_t getWidth();
+	uint8_t getHeight();
 private:
 	Letter** Font_6x8;
 	Letter** Font_7x10;
+	uint8_t height;
+	uint8_t width;
 };
 

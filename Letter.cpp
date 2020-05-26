@@ -11,3 +11,11 @@ Letter::Letter(uint16_t* tab, uint8_t height, uint8_t width) {
 uint16_t* Letter::getLetter() {
 	return letter_tab;
 }
+
+uint8_t Letter::getWidth() {
+	return this->width;
+}
+
+uint8_t Letter::getHeight() {
+	return this->height;
+}

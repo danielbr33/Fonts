@@ -9,6 +9,8 @@ public:
 	Letter(uint16_t* tab, uint8_t height, uint8_t width);
 	~Letter();
 	uint16_t* getLetter();
+	uint8_t getWidth();
+	uint8_t getHeight();
 private:
 	uint8_t width;
 	uint8_t height;
