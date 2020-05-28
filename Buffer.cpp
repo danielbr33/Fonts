@@ -4,8 +4,8 @@
 using namespace std;
 
 void Buffer::print() {
-	for (uint8_t i = 0; i < this->height; i++) {
-		for (uint8_t k = 0; k < (width/this->buffor_element_width); k++) {
+	for (uint8_t i = 0; i < this->buffer_height; i++) {
+		for (uint8_t k = 0; k < (this->buffer_width/this->buffor_element_width); k++) {
 			for (uint8_t j = 8; j > 0; j--) {
 				if (getBit(table[k][i], j - 1) == 0)
 					cout << "-";
@@ -17,15 +17,15 @@ void Buffer::print() {
 	}
 }
 
-Buffer::Buffer(){
-	this->height = 32;
-	this->width = 64;
+Buffer::Buffer(uint8_t buffer_width, uint8_t buffer_height){
+	this->buffer_height = buffer_height;
+	this->buffer_width = buffer_width;
 	this->buffor_element_width=8;
-	table = new uint8_t* [width/this->buffor_element_width];
-	for (uint8_t i = 0; i < (width / this->buffor_element_width); i++)
-		table[i] = new uint8_t[height];
-	for (uint8_t j=0; j < (width/this->buffor_element_width); j++)
-		for (uint8_t i = 0; i < height; i++)
+	table = new uint8_t* [this->buffer_width/this->buffor_element_width];
+	for (uint8_t i = 0; i < (this->buffer_width / this->buffor_element_width); i++)
+		table[i] = new uint8_t[this->buffer_height];
+	for (uint8_t j=0; j < (this->buffer_width/this->buffor_element_width); j++)
+		for (uint8_t i = 0; i < this->buffer_height; i++)
 		table[j][i] = 0;
 	font6x8_ready = 0;
 	font7x10_ready = 0;
@@ -38,8 +38,6 @@ Buffer::~Buffer(){
 void Buffer::addLetter(uint8_t letter, uint8_t height, uint8_t coord_X, uint8_t coord_Y) {
 	uint16_t number_of_collumn = (uint16_t)(coord_X/8);
 	uint16_t offset = coord_X % 8;
-	cout << endl << number_of_collumn << endl;
-	cout << offset << endl;
 	if (height == 8) {
 		if (font6x8_ready == 0) {
 			Font_6x8 = new Fonts();
