@@ -5,11 +5,13 @@ using namespace std;
 
 void Buffer::print() {
 	for (uint8_t i = 0; i < this->height; i++) {
-		for (uint8_t j = width; j > 0; j--) {
-			if (getBit(table[i], j-1) == 0)
-				cout << "-";
-			else
-				cout << "+";
+		for (uint8_t k = 0; k < (width/8); k++) {
+			for (uint8_t j = 8; j > 0; j--) {
+				if (getBit(table[k][i], j - 1) == 0)
+					cout << "-";
+				else
+					cout << "+";
+			}
 		}
 		cout << endl;
 	}
@@ -18,9 +20,13 @@ void Buffer::print() {
 Buffer::Buffer(){
 	this->height = 32;
 	this->width = 64;
-	table = new uint64_t [height];
-	for (uint8_t i = 0; i < height; i++)
-		table[i] = 0;
+	table = new uint8_t* [width/8];
+	for (uint8_t i = 0; i < (width / 8); i++)
+		table[i] = new uint8_t[height];
+	for (uint8_t j=0; j < (width/8); j++)
+		for (uint8_t i = 0; i < height; i++)
+		table[j][i] = 0;
+	width_of_buffor_element=8;
 	font6x8_ready = 0;
 	font7x10_ready = 0;
 }
@@ -30,6 +36,10 @@ Buffer::~Buffer(){
 }
 
 void Buffer::addLetter(uint8_t letter, uint8_t height, uint8_t coord_X, uint8_t coord_Y) {
+	uint16_t number_of_collumn = (uint16_t)(coord_X/8);
+	uint16_t offset = coord_X % 8;
+	cout << endl << number_of_collumn << endl;
+	cout << offset << endl;
 	if (height == 8) {
 		if (font6x8_ready == 0) {
 			Font_6x8 = new Fonts();
@@ -37,10 +47,12 @@ void Buffer::addLetter(uint8_t letter, uint8_t height, uint8_t coord_X, uint8_t 
 			font6x8_ready = 1;
 		}
 		for (uint8_t i = 0; i < height; i++) {
-			table[i + coord_Y] |= (Font_6x8->getLetter6x8(letter)[i] << 14 );
+			table[number_of_collumn][i + coord_Y] |= (Font_6x8->getLetter6x8(letter)[i] >> (8 + offset));
+			if (offset != 0)
+				table[number_of_collumn + 1][i + coord_Y] |= (Font_6x8->getLetter6x8(letter)[i] >> 8 << (8-offset));
 		}
 	}
-
+	/*
 	else if (height == 10) {
 		if (font7x10_ready == 0) {
 			Font_7x10 = new Fonts();
@@ -51,4 +63,5 @@ void Buffer::addLetter(uint8_t letter, uint8_t height, uint8_t coord_X, uint8_t 
 			table[i + coord_Y] |= (Font_7x10->getLetter7x10(letter)[i] << (64-16-coord_X));
 		}
 	}
+	*/
 }
