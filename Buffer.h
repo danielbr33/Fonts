@@ -14,6 +14,6 @@ private:
 	Fonts* Font_7x10;
 	uint8_t font6x8_ready;
 	uint8_t font7x10_ready;
-	uint8_t width_of_buffor_element;
+	uint8_t buffor_element_width;
 };
 
