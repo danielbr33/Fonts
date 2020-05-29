@@ -1,11 +1,14 @@
 #pragma once
 #include "Fonts.h"
+
+typedef enum { Font6x8, Font7x10 } Font;
+
 class Buffer{
 public:
 	void print();
 	Buffer(uint8_t buffer_width, uint8_t buffer_height);
 	~Buffer();
-	void addLetter(uint8_t letter, uint8_t height, uint8_t coord_X, uint8_t coord_Y);
+	void addLetter(uint8_t letter, Font, uint8_t coord_X, uint8_t coord_Y);
 private:
 	uint8_t** table;
 	int buffer_width;

@@ -35,16 +35,16 @@ Buffer::~Buffer(){
 	delete[] table;
 }
 
-void Buffer::addLetter(uint8_t letter, uint8_t height, uint8_t coord_X, uint8_t coord_Y) {
+void Buffer::addLetter(uint8_t letter, Font font, uint8_t coord_X, uint8_t coord_Y) {
 	uint16_t number_of_collumn = (uint16_t)(coord_X/8);
 	uint16_t offset = coord_X % 8;
-	if (height == 8) {
+	if (font == Font6x8) {
 		if (font6x8_ready == 0) {
 			Font_6x8 = new Fonts();
 			Font_6x8->createFont6x8();
 			font6x8_ready = 1;
 		}
-		for (uint8_t i = 0; i < height; i++) {
+		for (uint8_t i = 0; i < Font_6x8->getHeight(); i++) {
 			table[number_of_collumn][i + coord_Y] |= (Font_6x8->getLetter6x8(letter)[i] >> (this->buffor_element_width + offset));
 			if (offset != 0)
 				table[number_of_collumn + 1][i + coord_Y] |= (Font_6x8->getLetter6x8(letter)[i] >> 8 << (this->buffor_element_width-offset));
