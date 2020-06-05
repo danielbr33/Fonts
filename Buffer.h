@@ -9,6 +9,8 @@ public:
 	Buffer(uint8_t buffer_width, uint8_t buffer_height);
 	~Buffer();
 	void addLetter(uint8_t letter, Font, uint8_t coord_X, uint8_t coord_Y);
+	void addText(char *text, Font, uint8_t coord_X, uint8_t coord_Y);
+	void createFont(Font font);
 private:
 	uint8_t** table;
 	int buffer_width;

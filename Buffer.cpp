@@ -1,6 +1,7 @@
 #include "Buffer.h"
 #include <iostream>
 #include "bitoperations.h"
+#include <string.h>
 using namespace std;
 
 void Buffer::print() {
@@ -45,9 +46,12 @@ void Buffer::addLetter(uint8_t letter, Font font, uint8_t coord_X, uint8_t coord
 			font6x8_ready = 1;
 		}
 		for (uint8_t i = 0; i < Font_6x8->getHeight(); i++) {
-			table[number_of_collumn][i + coord_Y] |= (Font_6x8->getLetter6x8(letter)[i] >> (this->buffor_element_width + offset));
-			if (offset != 0)
-				table[number_of_collumn + 1][i + coord_Y] |= (Font_6x8->getLetter6x8(letter)[i] >> Font_6x8->getWidth()-this->buffor_element_width << (this->buffor_element_width-offset));
+			if (number_of_collumn < ((uint8_t)this->buffer_width / 8)) {
+				table[number_of_collumn][i + coord_Y] |= (Font_6x8->getLetter6x8(letter)[i] >> (this->buffor_element_width + offset));
+			}
+			if ( (offset != 0) && (number_of_collumn + 1) < ((uint8_t)this->buffer_width / 8) ) {
+					table[number_of_collumn + 1][i + coord_Y] |= (Font_6x8->getLetter6x8(letter)[i] >> (offset));
+			}
 		}
 	}
 	/*
@@ -62,4 +66,22 @@ void Buffer::addLetter(uint8_t letter, Font font, uint8_t coord_X, uint8_t coord
 		}
 	}
 	*/
+}
+
+void Buffer::addText(char* text, Font font, uint8_t coord_X, uint8_t coord_Y) {
+	createFont(font);
+	Fonts* Actual_Font = new Fonts;
+	if (font == Font6x8)
+		Actual_Font = Font_6x8;
+	for (uint8_t i = 0; i < strlen((char*)text); i++) {
+		uint8_t current_X = coord_X + i * Actual_Font->getWidth();
+		addLetter(text[i], font, current_X, coord_Y);
+	}
+}
+
+void Buffer::createFont(Font font) {
+	if (font == Font6x8 && font6x8_ready==0)
+		Font_6x8 = new Fonts();
+		Font_6x8->createFont6x8();
+		font6x8_ready = 1;
 }
