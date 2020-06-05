@@ -32,6 +32,7 @@ Buffer::Buffer(uint8_t buffer_width, uint8_t buffer_height){
 		table[j][i] = 0;
 	font6x8_ready = 0;
 	font7x10_ready = 0;
+	font11x18_ready = 0;
 }
 
 Buffer::~Buffer(){
@@ -44,6 +45,8 @@ void Buffer::addLetter(uint8_t letter, Font font, uint8_t coord_X, uint8_t coord
 		Actual_Font = Font_6x8;
 	else if (font == Font7x10)
 		Actual_Font = Font_7x10;
+	else if (font == Font11x18)
+		Actual_Font = Font_11x18;
 	uint16_t number_of_collumn = (uint16_t)(coord_X/8);
 	uint16_t offset = coord_X % 8;
 	for (uint8_t i = 0; i < Actual_Font->getHeight(); i++) {
@@ -51,21 +54,9 @@ void Buffer::addLetter(uint8_t letter, Font font, uint8_t coord_X, uint8_t coord
 			table[number_of_collumn][i + coord_Y] |= (Actual_Font->getLetter(letter)[i] >> (BUFFOR_PART_WIDTH + offset));
 		}
 		if ( (offset != 0) && (number_of_collumn + 1) < ((uint8_t)buffer_width / 8) ) {
-				table[number_of_collumn + 1][i + coord_Y] |= (Actual_Font->getLetter(letter)[i] >> (offset));
+			table[number_of_collumn + 1][i + coord_Y] |= (Actual_Font->getLetter(letter)[i] >> (offset));
 		}
 	}
-	/*
-	else if (height == 10) {
-		if (font7x10_ready == 0) {
-			Font_7x10 = new Fonts();
-			Font_7x10->createFont6x8();
-			font7x10_ready = 1;
-		}
-		for (uint8_t i = 0; i < height; i++) {
-			table[i + coord_Y] |= (Font_7x10->getLetter7x10(letter)[i] << (64-16-coord_X));
-		}
-	}
-	*/
 }
 
 void Buffer::addText(char* text, Font font, uint8_t coord_X, uint8_t coord_Y) {
@@ -74,6 +65,8 @@ void Buffer::addText(char* text, Font font, uint8_t coord_X, uint8_t coord_Y) {
 		Actual_Font = Font_6x8;
 	else if (font == Font7x10)
 		Actual_Font = Font_7x10;
+	else if (font == Font11x18)
+		Actual_Font = Font_11x18;
 	for (uint8_t i = 0; i < strlen((char*)text); i++) {
 		uint8_t current_X = coord_X + i * Actual_Font->getWidth();
 		addLetter(text[i], font, current_X, coord_Y);
@@ -90,5 +83,10 @@ void Buffer::createFont(Font font) {
 		Font_7x10 = new Fonts();
 		Font_7x10->createFont7x10();
 		font7x10_ready = 1;
+	}
+	else if (font == Font11x18 && font11x18_ready == 0) {
+		Font_11x18 = new Fonts();
+		Font_11x18->createFont11x18();
+		font11x18_ready = 1;
 	}
 }
