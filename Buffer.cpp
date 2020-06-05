@@ -4,9 +4,15 @@
 #include <string.h>
 using namespace std;
 
+void Buffer::clear() {
+	for (uint8_t i = 0; i < this->buffer_height; i++)
+		for (uint8_t j = 0; j < this->buffer_width / BUFFOR_PART_WIDTH; j++)
+			table[j][i]=0;
+}
+
 void Buffer::print() {
 	for (uint8_t i = 0; i < this->buffer_height; i++) {
-		for (uint8_t k = 0; k < (this->buffer_width/this->buffor_element_width); k++) {
+		for (uint8_t k = 0; k < (this->buffer_width/BUFFOR_PART_WIDTH); k++) {
 			for (uint8_t j = 8; j > 0; j--) {
 				if (getBit(table[k][i], j - 1) == 0)
 					cout << "-";
@@ -21,11 +27,10 @@ void Buffer::print() {
 Buffer::Buffer(uint8_t buffer_width, uint8_t buffer_height){
 	this->buffer_height = buffer_height;
 	this->buffer_width = buffer_width;
-	this->buffor_element_width=8;
-	table = new uint8_t* [this->buffer_width/this->buffor_element_width];
-	for (uint8_t i = 0; i < (this->buffer_width / this->buffor_element_width); i++)
+	table = new uint8_t* [this->buffer_width/BUFFOR_PART_WIDTH];
+	for (uint8_t i = 0; i < (this->buffer_width / BUFFOR_PART_WIDTH); i++)
 		table[i] = new uint8_t[this->buffer_height];
-	for (uint8_t j=0; j < (this->buffer_width/this->buffor_element_width); j++)
+	for (uint8_t j=0; j < (this->buffer_width/BUFFOR_PART_WIDTH); j++)
 		for (uint8_t i = 0; i < this->buffer_height; i++)
 		table[j][i] = 0;
 	font6x8_ready = 0;
@@ -38,7 +43,6 @@ Buffer::~Buffer(){
 
 void Buffer::addLetter(uint8_t letter, Font font, uint8_t coord_X, uint8_t coord_Y) {
 	createFont(font);
-	Fonts* Actual_Font = new Fonts;
 	if (font == Font6x8)
 		Actual_Font = Font_6x8;
 	else if (font == Font7x10)
@@ -47,9 +51,9 @@ void Buffer::addLetter(uint8_t letter, Font font, uint8_t coord_X, uint8_t coord
 	uint16_t offset = coord_X % 8;
 	for (uint8_t i = 0; i < Actual_Font->getHeight(); i++) {
 		if (number_of_collumn < ((uint8_t)this->buffer_width / 8)) {
-			table[number_of_collumn][i + coord_Y] |= (Actual_Font->getLetter(letter)[i] >> (this->buffor_element_width + offset));
+			table[number_of_collumn][i + coord_Y] |= (Actual_Font->getLetter(letter)[i] >> (BUFFOR_PART_WIDTH + offset));
 		}
-		if ( (offset != 0) && (number_of_collumn + 1) < ((uint8_t)this->buffer_width / 8) ) {
+		if ( (offset != 0) && (number_of_collumn + 1) < ((uint8_t)buffer_width / 8) ) {
 				table[number_of_collumn + 1][i + coord_Y] |= (Actual_Font->getLetter(letter)[i] >> (offset));
 		}
 	}
@@ -69,7 +73,6 @@ void Buffer::addLetter(uint8_t letter, Font font, uint8_t coord_X, uint8_t coord
 
 void Buffer::addText(char* text, Font font, uint8_t coord_X, uint8_t coord_Y) {
 	createFont(font);
-	Fonts* Actual_Font = new Fonts;
 	if (font == Font6x8)
 		Actual_Font = Font_6x8;
 	else if (font == Font7x10)
