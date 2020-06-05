@@ -1,8 +1,5 @@
 #include "Buffer.h"
-#include <iostream>
 #include "bitoperations.h"
-#include <string.h>
-using namespace std;
 
 void Buffer::clear() {
 	for (uint8_t i = 0; i < this->buffer_height; i++)
