@@ -217,11 +217,11 @@ void Fonts::createFont7x10() {
 	this->height = 10;
 }
 
-uint16_t* Fonts::getLetter6x8(uint8_t letter) {
-	return Font_6x8[letter - 32]->getLetter();
-}
-uint16_t* Fonts::getLetter7x10(uint8_t letter) {
-	return Font_7x10[letter - 32]->getLetter();
+uint16_t* Fonts::getLetter(uint8_t letter) {
+	if (this->height == 8)
+		return Font_6x8[letter - 32]->getLetter();
+	else if (this->height == 10)
+		return Font_7x10[letter - 32]->getLetter();
 }
 
 uint8_t Fonts::getWidth() {

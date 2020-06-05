@@ -47,10 +47,10 @@ void Buffer::addLetter(uint8_t letter, Font font, uint8_t coord_X, uint8_t coord
 	uint16_t offset = coord_X % 8;
 	for (uint8_t i = 0; i < Actual_Font->getHeight(); i++) {
 		if (number_of_collumn < ((uint8_t)this->buffer_width / 8)) {
-			table[number_of_collumn][i + coord_Y] |= (Actual_Font->getLetter6x8(letter)[i] >> (this->buffor_element_width + offset));
+			table[number_of_collumn][i + coord_Y] |= (Actual_Font->getLetter(letter)[i] >> (this->buffor_element_width + offset));
 		}
 		if ( (offset != 0) && (number_of_collumn + 1) < ((uint8_t)this->buffer_width / 8) ) {
-				table[number_of_collumn + 1][i + coord_Y] |= (Actual_Font->getLetter6x8(letter)[i] >> (offset));
+				table[number_of_collumn + 1][i + coord_Y] |= (Actual_Font->getLetter(letter)[i] >> (offset));
 		}
 	}
 	/*
