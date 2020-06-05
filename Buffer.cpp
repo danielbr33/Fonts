@@ -50,6 +50,8 @@ void Buffer::addLetter(uint8_t letter, Font font, uint8_t coord_X, uint8_t coord
 	uint16_t number_of_collumn = (uint16_t)(coord_X/8);
 	uint16_t offset = coord_X % 8;
 	for (uint8_t i = 0; i < Actual_Font->getHeight(); i++) {
+		if (coord_Y + i >= this->buffer_height)
+			break;
 		if (number_of_collumn < ((uint8_t)this->buffer_width / 8)) {
 			table[number_of_collumn][i + coord_Y] |= (Actual_Font->getLetter(letter)[i] >> (BUFFOR_PART_WIDTH + offset));
 		}
