@@ -77,8 +77,9 @@ void Buffer::addText(char* text, Font font, uint8_t coord_X, uint8_t coord_Y) {
 }
 
 void Buffer::createFont(Font font) {
-	if (font == Font6x8 && font6x8_ready==0)
+	if (font == Font6x8 && font6x8_ready == 0) {
 		Font_6x8 = new Fonts();
 		Font_6x8->createFont6x8();
 		font6x8_ready = 1;
+	}
 }
