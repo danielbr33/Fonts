@@ -1,10 +1,14 @@
 #include "Buffer.h"
 #include "bitoperations.h"
 
-void Buffer::clear() {
+void Buffer::fill(Color color) {
 	for (uint8_t i = 0; i < this->buffer_height; i++)
-		for (uint8_t j = 0; j < this->buffer_width / BUFFOR_PART_WIDTH; j++)
-			table[j][i]=0;
+		for (uint8_t j = 0; j < this->buffer_width / BUFFOR_PART_WIDTH; j++) {
+			if (color == Black)
+				table[j][i] = BUFFOR_FILLED;
+			else
+				table[j][i] = 0;
+		}
 }
 
 void Buffer::print() {
@@ -39,7 +43,7 @@ Buffer::~Buffer(){
 	delete[] table;
 }
 
-void Buffer::addLetter(uint8_t letter, Font font, uint8_t coord_X, uint8_t coord_Y) {
+void Buffer::addLetter(uint8_t letter, Font font, Color color, uint8_t coord_X, uint8_t coord_Y) {
 	createFont(font);
 	if (font == Font6x8)
 		Actual_Font = Font_6x8;
@@ -47,21 +51,21 @@ void Buffer::addLetter(uint8_t letter, Font font, uint8_t coord_X, uint8_t coord
 		Actual_Font = Font_7x10;
 	else if (font == Font11x18)
 		Actual_Font = Font_11x18;
-	uint16_t number_of_collumn = (uint16_t)(coord_X/8);
-	uint16_t offset = coord_X % 8;
+	uint8_t number_of_collumn = (uint8_t)(coord_X/8);
+	uint8_t offset = coord_X % 8;
 	for (uint8_t i = 0; i < Actual_Font->getHeight(); i++) {
 		if (coord_Y + i >= this->buffer_height)
 			break;
 		if (number_of_collumn < ((uint8_t)this->buffer_width / 8)) {
 			table[number_of_collumn][i + coord_Y] |= (Actual_Font->getLetter(letter)[i] >> (BUFFOR_PART_WIDTH + offset));
 		}
-		if ( (offset != 0) && (number_of_collumn + 1) < ((uint8_t)buffer_width / 8) ) {
+		if ((offset != 0) && (number_of_collumn + 1) < ((uint8_t)buffer_width / 8)) {
 			table[number_of_collumn + 1][i + coord_Y] |= (Actual_Font->getLetter(letter)[i] >> (offset));
 		}
 	}
 }
 
-void Buffer::addText(char* text, Font font, uint8_t coord_X, uint8_t coord_Y) {
+void Buffer::addText(char* text, Font font, Color color, uint8_t coord_X, uint8_t coord_Y) {
 	createFont(font);
 	if (font == Font6x8)
 		Actual_Font = Font_6x8;
@@ -71,7 +75,7 @@ void Buffer::addText(char* text, Font font, uint8_t coord_X, uint8_t coord_Y) {
 		Actual_Font = Font_11x18;
 	for (uint8_t i = 0; i < strlen((char*)text); i++) {
 		uint8_t current_X = coord_X + i * Actual_Font->getWidth();
-		addLetter(text[i], font, current_X, coord_Y);
+		addLetter(text[i], font, color, current_X, coord_Y);
 	}
 }
 

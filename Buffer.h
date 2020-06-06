@@ -4,7 +4,9 @@
 #include "Fonts.h"
 
 typedef enum { Font6x8, Font7x10, Font11x18 } Font;
+typedef enum { Black, White } Color;
 #define BUFFOR_PART_WIDTH 8
+#define BUFFOR_FILLED 255
 
 class Buffer{
 
@@ -12,10 +14,10 @@ public:
 	void print();
 	Buffer(uint8_t buffer_width, uint8_t buffer_height);
 	~Buffer();
-	void addLetter(uint8_t letter, Font, uint8_t coord_X, uint8_t coord_Y);
-	void addText(char *text, Font, uint8_t coord_X, uint8_t coord_Y);
+	void addLetter(uint8_t letter, Font, Color color, uint8_t coord_X, uint8_t coord_Y);
+	void addText(char *text, Font, Color color, uint8_t coord_X, uint8_t coord_Y);
 	void createFont(Font font);
-	void clear();
+	void fill(Color color);
 
 private:
 	uint8_t** table;
