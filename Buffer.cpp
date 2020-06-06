@@ -51,16 +51,34 @@ void Buffer::addLetter(uint8_t letter, Font font, Color color, uint8_t coord_X, 
 		Actual_Font = Font_7x10;
 	else if (font == Font11x18)
 		Actual_Font = Font_11x18;
+
 	uint8_t number_of_collumn = (uint8_t)(coord_X/8);
 	uint8_t offset = coord_X % 8;
+	uint8_t state;
 	for (uint8_t i = 0; i < Actual_Font->getHeight(); i++) {
 		if (coord_Y + i >= this->buffer_height)
 			break;
-		if (number_of_collumn < ((uint8_t)this->buffer_width / 8)) {
-			table[number_of_collumn][i + coord_Y] |= (Actual_Font->getLetter(letter)[i] >> (BUFFOR_PART_WIDTH + offset));
+
+		if (color == Black) {
+			if (number_of_collumn < ((uint8_t)this->buffer_width / 8)) {
+				table[number_of_collumn][i + coord_Y] |= (Actual_Font->getLetter(letter)[i] >> (BUFFOR_PART_WIDTH + offset));
+			}
+			if ((offset != 0) && (number_of_collumn + 1) < ((uint8_t)buffer_width / 8)) {
+				table[number_of_collumn + 1][i + coord_Y] |= (Actual_Font->getLetter(letter)[i] >> (offset));
+			}
 		}
-		if ((offset != 0) && (number_of_collumn + 1) < ((uint8_t)buffer_width / 8)) {
-			table[number_of_collumn + 1][i + coord_Y] |= (Actual_Font->getLetter(letter)[i] >> (offset));
+
+		else if (color == White) {
+			if (number_of_collumn < ((uint8_t)this->buffer_width / 8)) {
+				if (table[number_of_collumn][i + coord_Y] == 0)
+					table[number_of_collumn][i + coord_Y] = ~0;
+				table[number_of_collumn][i + coord_Y] &= ~(Actual_Font->getLetter(letter)[i] >> (BUFFOR_PART_WIDTH + offset));
+			}
+			if ((offset != 0) && (number_of_collumn + 1) < ((uint8_t)buffer_width / 8)) {
+				if (table[number_of_collumn+1][i + coord_Y] == 0)
+					table[number_of_collumn+1][i + coord_Y] = ~0;
+				table[number_of_collumn + 1][i + coord_Y] &= ~(Actual_Font->getLetter(letter)[i] >> (offset));
+			}
 		}
 	}
 }
