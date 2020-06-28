@@ -27,9 +27,9 @@ void Buffer::fill(Color color) {
 
 void Buffer::print() {
 	for (uint8_t i = 0; i < (this->buffer_height / BUFFOR_PART_HEIGHT); i++){
-		for (uint8_t j = 8; j > 0; j--) {
+		for (int8_t j = 0; j < 8; j++) {
 			for (uint8_t k = 0; k < this->buffer_width; k++){
-				if (getBit(table[k][i], j-1))
+				if (getBit(table[k][i], j))
 					cout << "-";
 				else
 					cout << "+";
@@ -69,16 +69,20 @@ void Buffer::addLetter(uint8_t letter, Font font, Color color, uint8_t coord_X, 
 	uint8_t number_of_verse = (uint8_t)(coord_Y/8);
 	uint8_t offset = coord_Y % 8;
 	uint8_t state;
+	uint8_t writted_horizontal_bits;
 	for (uint8_t i = 0; i < Actual_Font->getWidth(); i++) {
 		if (coord_X + i >= this->buffer_width)
 			break;
 
 		if (color == Black) {
 			if (number_of_verse < ((uint8_t)this->buffer_height / 8)) {
-				table[i+coord_X][number_of_verse] |= (Actual_Font->getLetter(letter)[i] >> (BUFFOR_PART_HEIGHT + offset));
+				table[i+coord_X][number_of_verse] |= (Actual_Font->getLetter(letter)[i] << offset);
 			}
 			if ((offset != 0) && (number_of_verse + 1) < ((uint8_t)buffer_height / 8)) {
-				table[i + coord_X][number_of_verse + 1] |= (Actual_Font->getLetter(letter)[i] >> (offset));
+				table[i + coord_X][number_of_verse + 1] |= (Actual_Font->getLetter(letter)[i] >> (BUFFOR_PART_HEIGHT - offset));
+			}
+			if ((offset != 0) && (number_of_verse + 2) < ((uint8_t)buffer_height / 8)  && font == Font11x18) {
+				table[i + coord_X][number_of_verse + 2] |= (Actual_Font->getLetter(letter)[i] >> (2*BUFFOR_PART_HEIGHT - offset));
 			}
 		}
 
@@ -86,12 +90,17 @@ void Buffer::addLetter(uint8_t letter, Font font, Color color, uint8_t coord_X, 
 			if (number_of_verse < ((uint8_t)this->buffer_height / 8)) {
 				if (table[i+coord_X][number_of_verse] == 0)
 					table[i + coord_X][number_of_verse] = ~0;
-				table[i + coord_X][number_of_verse] &= ~(Actual_Font->getLetter(letter)[i] >> (BUFFOR_PART_HEIGHT + offset));
+				table[i + coord_X][number_of_verse] &= ~(Actual_Font->getLetter(letter)[i] << offset);
 			}
 			if ((offset != 0) && (number_of_verse + 1) < ((uint8_t)buffer_height / 8)) {
 				if (table[i + coord_X][number_of_verse + 1] == 0)
 					table[i + coord_X][number_of_verse + 1] = ~0;
-				table[i + coord_X][number_of_verse + 1] &= ~(Actual_Font->getLetter(letter)[i] >> (offset));
+				table[i + coord_X][number_of_verse + 1] &= ~(Actual_Font->getLetter(letter)[i] >> (BUFFOR_PART_HEIGHT - offset));
+			}
+			if ((offset != 0) && (number_of_verse + 1) < ((uint8_t)buffer_height / 8) && font == Font11x18) {
+				if (table[i + coord_X][number_of_verse + 2] == 0)
+					table[i + coord_X][number_of_verse + 2] = ~0;
+				table[i + coord_X][number_of_verse + 2] &= ~(Actual_Font->getLetter(letter)[i] >> (2*BUFFOR_PART_HEIGHT - offset));
 			}
 		}
 	}
