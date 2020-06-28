@@ -19,8 +19,12 @@ uint8_t reverseBits(uint8_t num)
     return reverse_num;
 }
 
-uint8_t setBit(uint8_t &byte, uint8_t bit){
+uint8_t setBit(uint16_t &byte, uint8_t bit){
 	return byte |= 1UL << bit;
+}
+
+uint8_t setBit2(uint32_t& byte, uint8_t bit) {
+    return byte |= 1UL << bit;
 }
 
 uint8_t clearBit(uint8_t &byte, uint8_t bit){

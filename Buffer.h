@@ -5,7 +5,7 @@
 
 typedef enum { Font6x8, Font7x10, Font11x18 } Font;
 typedef enum { Black, White } Color;
-#define BUFFOR_PART_WIDTH 8
+#define BUFFOR_PART_HEIGHT 8
 #define BUFFOR_FILLED 255
 
 class Buffer{
@@ -30,7 +30,7 @@ private:
 	uint8_t font6x8_ready;
 	uint8_t font7x10_ready;
 	uint8_t font11x18_ready;
-	uint8_t buffor_element_width;
+	uint8_t buffor_element_height;
 };
 
 #endif BUFFER_H

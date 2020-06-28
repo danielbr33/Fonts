@@ -10,7 +10,7 @@ public:
 	void createFont6x8();
 	void createFont7x10();
 	void createFont11x18();
-	uint16_t* getLetter(uint8_t letter);
+	uint32_t* getLetter(uint8_t letter);
 	uint8_t getWidth();
 	uint8_t getHeight();
 
