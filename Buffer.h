@@ -18,6 +18,7 @@ public:
 	void addText(char *text, Font, Color color, uint8_t coord_X, uint8_t coord_Y);
 	void createFont(Font font);
 	void fill(Color color);
+	uint8_t* getBuffer(uint8_t verse);
 
 private:
 	uint8_t** table;

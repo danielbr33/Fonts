@@ -1,13 +1,14 @@
 #include "Buffer.h"
 #include "bitoperations.h"
+#include "string.h"
 
 void Buffer::fill(Color color) {
-	for (uint8_t i = 0; i < this->buffer_width; i++)
-		for (uint8_t j = 0; j < this->buffer_width / BUFFOR_PART_HEIGHT; j++) {
-			if (color == Black)
-				table[j][i] = BUFFOR_FILLED;
+	for (uint8_t i = 0; i < this->buffer_height / BUFFOR_PART_HEIGHT; i++)
+		for (uint8_t j = 0; j < this->buffer_width; j++) {
+			if (color == White)
+				table[i][j] = BUFFOR_FILLED;
 			else
-				table[j][i] = 0;
+				table[i][j] = 0;
 		}
 }
 
@@ -29,7 +30,7 @@ void Buffer::print() {
 	for (uint8_t i = 0; i < (this->buffer_height / BUFFOR_PART_HEIGHT); i++){
 		for (int8_t j = 0; j < 8; j++) {
 			for (uint8_t k = 0; k < this->buffer_width; k++){
-				if (getBit(table[k][i], j))
+				if (getBit(table[i][k], j))
 					cout << "-";
 				else
 					cout << "+";
@@ -39,15 +40,19 @@ void Buffer::print() {
 	}
 }
 
+uint8_t* Buffer::getBuffer(uint8_t verse){
+	return this->table[verse];
+}
+
 Buffer::Buffer(uint8_t buffer_width, uint8_t buffer_height){
 	this->buffer_height = buffer_height;
 	this->buffer_width = buffer_width;
-	table = new uint8_t* [this->buffer_width];
-	for (uint8_t i = 0; i < (this->buffer_width); i++)
-		table[i] = new uint8_t[this->buffer_height / BUFFOR_PART_HEIGHT];
-	for (uint8_t j=0; j < (this->buffer_width); j++)
-		for (uint8_t i = 0; i < this->buffer_height / BUFFOR_PART_HEIGHT; i++)
-		table[j][i] = 0;
+	table = new uint8_t* [this->buffer_height / BUFFOR_PART_HEIGHT];
+	for (uint8_t i = 0; i < (this->buffer_height/BUFFOR_PART_HEIGHT); i++)
+		table[i] = new uint8_t[this->buffer_width];
+	for (uint8_t j=0; j < (this->buffer_height/BUFFOR_PART_HEIGHT); j++)
+		for (uint8_t i = 0; i < this->buffer_width; i++)
+			table[j][i] = 0;
 	font6x8_ready = 0;
 	font7x10_ready = 0;
 	font11x18_ready = 0;
@@ -74,33 +79,33 @@ void Buffer::addLetter(uint8_t letter, Font font, Color color, uint8_t coord_X, 
 		if (coord_X + i >= this->buffer_width)
 			break;
 
-		if (color == Black) {
+		if (color == White) {
 			if (number_of_verse < ((uint8_t)this->buffer_height / 8)) {
-				table[i+coord_X][number_of_verse] |= (Actual_Font->getLetter(letter)[i] << offset);
+				table[number_of_verse][i+coord_X] |= (Actual_Font->getLetter(letter)[i] << offset);
 			}
 			if ((offset != 0) && (number_of_verse + 1) < ((uint8_t)buffer_height / 8)) {
-				table[i + coord_X][number_of_verse + 1] |= (Actual_Font->getLetter(letter)[i] >> (BUFFOR_PART_HEIGHT - offset));
+				table[number_of_verse + 1][i + coord_X] |= (Actual_Font->getLetter(letter)[i] >> (BUFFOR_PART_HEIGHT - offset));
 			}
 			if ((offset != 0) && (number_of_verse + 2) < ((uint8_t)buffer_height / 8)  && font == Font11x18) {
-				table[i + coord_X][number_of_verse + 2] |= (Actual_Font->getLetter(letter)[i] >> (2*BUFFOR_PART_HEIGHT - offset));
+				table[number_of_verse + 2][i + coord_X] |= (Actual_Font->getLetter(letter)[i] >> (2*BUFFOR_PART_HEIGHT - offset));
 			}
 		}
 
-		else if (color == White) {
+		else if (color == Black) {
 			if (number_of_verse < ((uint8_t)this->buffer_height / 8)) {
-				if (table[i+coord_X][number_of_verse] == 0)
-					table[i + coord_X][number_of_verse] = ~0;
-				table[i + coord_X][number_of_verse] &= ~(Actual_Font->getLetter(letter)[i] << offset);
+				if (table[number_of_verse][i+coord_X] == 0)
+					table[number_of_verse][i + coord_X] = ~0;
+				table[number_of_verse][i + coord_X] &= ~(Actual_Font->getLetter(letter)[i] << offset);
 			}
 			if ((offset != 0) && (number_of_verse + 1) < ((uint8_t)buffer_height / 8)) {
-				if (table[i + coord_X][number_of_verse + 1] == 0)
-					table[i + coord_X][number_of_verse + 1] = ~0;
-				table[i + coord_X][number_of_verse + 1] &= ~(Actual_Font->getLetter(letter)[i] >> (BUFFOR_PART_HEIGHT - offset));
+				if (table[number_of_verse + 1][i + coord_X] == 0)
+					table[number_of_verse + 1][i + coord_X] = ~0;
+				table[number_of_verse + 1][i + coord_X] &= ~(Actual_Font->getLetter(letter)[i] >> (BUFFOR_PART_HEIGHT - offset));
 			}
 			if ((offset != 0) && (number_of_verse + 1) < ((uint8_t)buffer_height / 8) && font == Font11x18) {
-				if (table[i + coord_X][number_of_verse + 2] == 0)
-					table[i + coord_X][number_of_verse + 2] = ~0;
-				table[i + coord_X][number_of_verse + 2] &= ~(Actual_Font->getLetter(letter)[i] >> (2*BUFFOR_PART_HEIGHT - offset));
+				if (table[number_of_verse + 2][i + coord_X] == 0)
+					table[number_of_verse + 2][i + coord_X] = ~0;
+				table[number_of_verse + 2][i + coord_X] &= ~(Actual_Font->getLetter(letter)[i] >> (2*BUFFOR_PART_HEIGHT - offset));
 			}
 		}
 	}

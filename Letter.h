@@ -2,6 +2,7 @@
 #define LETTER_H
 
 #include <iostream>
+#include "stdint.h"
 using namespace std;
 #define MAX_WIDTH 16
 
