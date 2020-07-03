@@ -2,11 +2,13 @@
 #define FONTS_H
 
 #include "Letter.h"
+#include <fstream>
 using namespace std;
 
 class Fonts{
 
 public:
+	void readFont(fstream& plik, uint16_t* font, int height, int width);
 	void createFont6x8();
 	void createFont7x10();
 	void createFont11x18();

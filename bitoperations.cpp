@@ -23,12 +23,20 @@ uint8_t setBit(uint16_t &byte, uint8_t bit){
 	return byte |= 1UL << bit;
 }
 
+uint16_t setBit3(uint16_t& byte, uint8_t bit) {
+    return byte |= 1UL << bit;
+}
+
 uint8_t setBit2(uint32_t& byte, uint8_t bit) {
     return byte |= 1UL << bit;
 }
 
 uint8_t clearBit(uint8_t &byte, uint8_t bit){
 	return byte &= ~(1UL << bit);
+}
+
+uint16_t clearBit3(uint16_t& byte, uint8_t bit) {
+    return byte &= ~(1UL << bit);
 }
 
 uint8_t toggleBit(uint8_t &byte, uint8_t bit){

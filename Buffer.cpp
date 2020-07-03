@@ -81,12 +81,15 @@ void Buffer::addLetter(uint8_t letter, Font font, Color color, uint8_t coord_X, 
 
 		if (color == White) {
 			if (number_of_verse < ((uint8_t)this->buffer_height / 8)) {
+				table[number_of_verse][i + coord_X] = 0;
 				table[number_of_verse][i+coord_X] |= (Actual_Font->getLetter(letter)[i] << offset);
 			}
 			if ((offset != 0) && (number_of_verse + 1) < ((uint8_t)buffer_height / 8)) {
+				table[number_of_verse + 1][i + coord_X] = 0;
 				table[number_of_verse + 1][i + coord_X] |= (Actual_Font->getLetter(letter)[i] >> (BUFFOR_PART_HEIGHT - offset));
 			}
 			if ((offset != 0) && (number_of_verse + 2) < ((uint8_t)buffer_height / 8)  && font == Font11x18) {
+				table[number_of_verse + 2][i + coord_X];
 				table[number_of_verse + 2][i + coord_X] |= (Actual_Font->getLetter(letter)[i] >> (2*BUFFOR_PART_HEIGHT - offset));
 			}
 		}
