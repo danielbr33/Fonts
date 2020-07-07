@@ -310,10 +310,11 @@ void Fonts::readFont(fstream& plik, uint16_t* font, int height, int width) {
 					setBit3(font[i * width + k], j);
 				}
 				else {
-					clearBit3(font[i * width + k], j);
+					//clearBit3(font[i * width + k], j);
 				}
 			}
 		}
+		plik >> temp;
 	}
 }
 
@@ -322,7 +323,7 @@ void Fonts::createFont11x18() {
 	this->height = 18;	
 	fstream plik;
 	plik.open("Font11x18.txt", ios::in);
-	//readFont(plik, Font11x18, this->height, this->width);
+	readFont(plik, Font11x18, this->height, this->width);
 	Font_11x18 = new Letter * [95];
 	for (uint8_t i = 0; i < 95; i++) {
 		Font_11x18[i] = new Letter(&Font11x18[i * width], height, width);
@@ -335,12 +336,20 @@ void Fonts::createFont6x8() {
 	this->height = 8;
 	fstream plik;
 	plik.open("Font6x8.txt", ios::in);
-	//readFont(plik, Font6x8, this->height, this->width);
+	readFont(plik, Font6x8, this->height, this->width);
 	Font_6x8 = new Letter* [95];
 	for (uint8_t i = 0; i < 95; i++) {
 		Font_6x8[i] = new Letter(&Font6x8[i * width], height, width);
 	}
 	plik.close();
+
+	for (int i = 0; i < 95; i++) {
+		cout << (char)(i + 32) << "\t";
+		for (int j = 0; j < width; j++) {
+			cout << hex << Font6x8[i * width + j] << "\t";
+		}
+		cout << endl;
+	}
 }
 
 void Fonts::createFont7x10() {
@@ -348,7 +357,7 @@ void Fonts::createFont7x10() {
 	this->height = 10;
 	fstream plik;
 	plik.open("Font7x10.txt", ios::in);
-	//readFont(plik, Font7x10, this->height, this->width);
+	readFont(plik, Font7x10, this->height, this->width);
 	Font_7x10 = new Letter* [95];
 	for (uint8_t i = 0; i < 95; i++) {
 		Font_7x10[i] = new Letter(&Font7x10[i * width], height, width);
