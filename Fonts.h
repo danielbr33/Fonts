@@ -3,6 +3,10 @@
 
 #include "Letter.h"
 #include <fstream>
+#include <tchar.h>
+#include <string>
+#include <cstring>
+#include <Windows.h>
 using namespace std;
 
 class Fonts{
@@ -15,6 +19,7 @@ public:
 	uint32_t* getLetter(uint8_t letter);
 	uint8_t getWidth();
 	uint8_t getHeight();
+	void findFilesFromFolder(string folder_path, string search);
 
 private:
 	Letter** Font_6x8;
