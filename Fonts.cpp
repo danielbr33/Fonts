@@ -5,78 +5,83 @@ static uint16_t Font6x8[96 * 6];
 static uint16_t Font7x10[96 * 7];
 static uint16_t Font11x18[96 * 11];
 
-void Fonts::readFont(fstream& plik, uint16_t* font, int height, int width) {
-	for (uint16_t i = 0; i < (96 * width - 1); i++)
-		font[i] = 0;
+void Fonts::createFont(string font, uint16_t* font_table) {
+	Actual_Font = new Letter * [95];
+	for (uint8_t i = 0; i < 95; i++) {
+		Actual_Font[i] = new Letter(&font_table[i * width], height, width);
+	}
+	if (font == "Font6x8")
+		Font_6x8 = Actual_Font;
+	else if (font == "Font7x10")
+		Font_7x10 = Actual_Font;
+	else if (font == "Font11x18")
+		Font_11x18 = Actual_Font;
+}
+
+void Fonts::readFont(string font) {
+	fstream file;
+	findFontFromFolder("C:\\Users\\danie\\git\\Fonts\\*.txt", file, font);
+	file >> this->width;
+	cout << this->width << endl;
+	file >> this->height;
+	cout << this->height << endl;
+	cout << "width=" << this->width << endl;
+	cout << "height=" << this->height << endl;
+	uint16_t* Font;
+	Font = new uint16_t[96 * this->width];
+	if (font == "Font6x8")
+		Font = Font6x8;
+	if (font == "Font7x10")
+		Font = Font7x10;
+	if (font == "Font11x18")
+		Font = Font11x18;
+	for (uint16_t i = 0; i < (96 * this->width - 1); i++)
+		Font[i] = 0;
 	char temp;
 	for (int i = 0; i < 95; i++) {
 		for (int j = 0; j < height; j++) {
 			for (int k = 0; k < width; k++) {
 				do {
-					plik >> temp;
+					file >> temp;
 				}
 				while (temp != '-' && temp != '#');
 				if (temp == '#') {
-					setBit3(font[i * width + k], j);
+					setBit3(Font[i * width + k], j);
 				}
 				else {
-					clearBit3(font[i * width + k], j);
+					clearBit3(Font[i * width + k], j);
 				}
 			}
 		}
-		plik >> temp;
+		file >> temp;
 	}
+	file.close();
+	createFont(font, Font);
 }
 
-void Fonts::createFont11x18() {
-	this->width = 11;
-	this->height = 18;	
-	fstream plik;
-	plik.open("Font11x18.txt", ios::in);
-	readFont(plik, Font11x18, this->height, this->width);
-	Font_11x18 = new Letter * [95];
-	for (uint8_t i = 0; i < 95; i++) {
-		Font_11x18[i] = new Letter(&Font11x18[i * width], height, width);
-	}	
-	plik.close();
-}
-
-void Fonts::findFilesFromFolder(string folder_path, string search) {
+uint8_t Fonts::findFontFromFolder(string folder_path, fstream& file, string search) {
+	string text;
 	HANDLE hFile = INVALID_HANDLE_VALUE;
-	WIN32_FIND_DATAA   file_data;
-	hFile = FindFirstFileA((LPCSTR)folder_path.c_str(), &file_data);
+	WIN32_FIND_DATAA   file_dataa;
+	hFile = FindFirstFileA(folder_path.c_str(), &file_dataa);
 	if (hFile == INVALID_HANDLE_VALUE)
 		cout << "error";
-	cout << file_data.cFileName;
-}
-
-void Fonts::createFont6x8() {
-	string chFolder_path = "C:\\Users\\danie\\git\\Fonts\\*.txt";
-	findFilesFromFolder(chFolder_path, "Font6x8");
-
-	this->width = 6;
-	this->height = 8;
-	fstream plik;
-	plik.open("Font6x8.txt", ios::in);
-	readFont(plik, Font6x8, this->height, this->width);
-	Font_6x8 = new Letter* [95];
-	for (uint8_t i = 0; i < 95; i++) {
-		Font_6x8[i] = new Letter(&Font6x8[i * width], height, width);
+	file.open(file_dataa.cFileName, ios::in);
+	file >> text;
+	cout << text << endl;
+	if (text == search) {
+		return 0;
 	}
-	plik.close();
-}
-
-void Fonts::createFont7x10() {
-	this->width = 7;
-	this->height = 10;
-	fstream plik;
-	plik.open("Font7x10.txt", ios::in);
-	readFont(plik, Font7x10, this->height, this->width);
-	Font_7x10 = new Letter* [95];
-	for (uint8_t i = 0; i < 95; i++) {
-		Font_7x10[i] = new Letter(&Font7x10[i * width], height, width);
+	file.close();
+	while (FindNextFileA(hFile, &file_dataa) == 1) {
+		file.open(file_dataa.cFileName, ios::in);
+		file >> text;
+		cout << text << endl;
+		if (text == search) {
+			return 0;
+		}
+		file.close();
 	}
-	plik.close();
 }
 
 uint32_t* Fonts::getLetter(uint8_t letter) {

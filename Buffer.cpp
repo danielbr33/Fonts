@@ -131,17 +131,17 @@ void Buffer::addText(char* text, Font font, Color color, uint8_t coord_X, uint8_
 void Buffer::createFont(Font font) {
 	if (font == Font6x8 && font6x8_ready == 0) {
 		Font_6x8 = new Fonts();
-		Font_6x8->createFont6x8();
+		Font_6x8->readFont("Font6x8");
 		font6x8_ready = 1;
 	}
 	else if(font == Font7x10 && font7x10_ready == 0){
 		Font_7x10 = new Fonts();
-		Font_7x10->createFont7x10();
+		Font_7x10->readFont("Font7x10");
 		font7x10_ready = 1;
 	}
 	else if (font == Font11x18 && font11x18_ready == 0) {
 		Font_11x18 = new Fonts();
-		Font_11x18->createFont11x18();
+		Font_11x18->readFont("Font11x18");
 		font11x18_ready = 1;
 	}
 }
