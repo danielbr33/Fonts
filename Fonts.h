@@ -16,7 +16,6 @@ public:
 	uint32_t* getLetter(uint8_t letter);
 	uint8_t getWidth();
 	uint8_t getHeight();
-	uint8_t findFontFromFolder(string folder_path, fstream& file, string search);
 	void createFont(string font, uint16_t* font_table);
 
 private:

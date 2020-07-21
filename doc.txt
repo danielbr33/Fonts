@@ -11,6 +11,7 @@
     },
     "Font11x18": {
         "file": "Font11x18.txt",
+	"table": "Font11x18",
         "height": 18,
         "width": 11
     }

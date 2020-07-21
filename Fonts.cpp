@@ -20,10 +20,7 @@ void Fonts::createFont(string font, uint16_t* font_table) {
 }
 
 void Fonts::readFont(string font) {
-	//fstream file;
-	//findFontFromFolder("C:\\Users\\danie\\git\\Fonts\\*.txt", file, font);
-
-	//------------**************----------------
+	//------------READING JSON----------------
 	fstream json_file;
 	json_file.open("doc.txt", ios::in);
 	string json_string = " ";
@@ -39,17 +36,14 @@ void Fonts::readFont(string font) {
 	DeserializationError error = deserializeJson(doc, json_string);
 	if (error)
 		cout << error.c_str();
-
 	const char* path = doc[font.c_str()]["file"];
-	cout << path;
+	cout << path << endl;
 	fstream file;
 	file.open((string)path, ios::in);
-	cout << file.is_open();
 	//------------**************----------------
+
 	file >> this->width;
-	cout << this->width << endl;
 	file >> this->height;
-	cout << this->height << endl;
 	cout << "width=" << this->width << endl;
 	cout << "height=" << this->height << endl;
 	uint16_t* Font;
@@ -82,32 +76,6 @@ void Fonts::readFont(string font) {
 	}
 	file.close();
 	createFont(font, Font);
-}
-
-uint8_t Fonts::findFontFromFolder(string folder_path, fstream& file, string search) {
-	string text;
-	HANDLE hFile = INVALID_HANDLE_VALUE;
-	WIN32_FIND_DATAA   file_dataa;
-	hFile = FindFirstFileA(folder_path.c_str(), &file_dataa);
-	if (hFile == INVALID_HANDLE_VALUE)
-		cout << "error";
-	file.open(file_dataa.cFileName, ios::in);
-	cout << file_dataa.cFileName;
-	file >> text;
-	cout << text << endl;
-	if (text == search) {
-		return 0;
-	}
-	file.close();
-	while (FindNextFileA(hFile, &file_dataa) == 1) {
-		file.open(file_dataa.cFileName, ios::in);
-		file >> text;
-		cout << text << endl;
-		if (text == search) {
-			return 0;
-		}
-		file.close();
-	}
 }
 
 uint32_t* Fonts::getLetter(uint8_t letter) {
