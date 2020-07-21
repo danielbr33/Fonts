@@ -44,5 +44,8 @@
     <ClInclude Include="Buffer.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="ArduinoJson-v6.15.2.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

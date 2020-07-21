@@ -1,0 +1,17 @@
+{
+    "Font6x8": {
+        "file": "Font6x8.txt",
+        "height": 8,
+        "width": 6
+    },
+    "Font7x10": {
+        "file": "Font7x10.txt",
+        "height": 10,
+        "width": 7
+    },
+    "Font11x18": {
+        "file": "Font11x18.txt",
+        "height": 18,
+        "width": 11
+    }
+}

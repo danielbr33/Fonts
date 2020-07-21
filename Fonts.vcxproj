@@ -145,6 +145,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ArduinoJson-v6.15.2.h" />
     <ClInclude Include="bitoperations.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Fonts.h" />

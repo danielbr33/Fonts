@@ -1,6 +1,7 @@
 #include "Fonts.h"
 #include "bitoperations.h"
 #include <string>
+#include "ArduinoJson-v6.15.2.h"
 static uint16_t Font6x8[96 * 6];
 static uint16_t Font7x10[96 * 7];
 static uint16_t Font11x18[96 * 11];
@@ -19,8 +20,32 @@ void Fonts::createFont(string font, uint16_t* font_table) {
 }
 
 void Fonts::readFont(string font) {
+	//fstream file;
+	//findFontFromFolder("C:\\Users\\danie\\git\\Fonts\\*.txt", file, font);
+
+	//------------**************----------------
+	fstream json_file;
+	json_file.open("doc.txt", ios::in);
+	string json_string = " ";
+	if (json_file) {
+		string line;
+		while (getline(json_file, line)) {
+			json_string += line;
+		}
+		json_file.close();
+	}
+	const int capacity = JSON_OBJECT_SIZE(3); 
+	DynamicJsonDocument doc(1024);
+	DeserializationError error = deserializeJson(doc, json_string);
+	if (error)
+		cout << error.c_str();
+
+	const char* path = doc[font.c_str()]["file"];
+	cout << path;
 	fstream file;
-	findFontFromFolder("C:\\Users\\danie\\git\\Fonts\\*.txt", file, font);
+	file.open((string)path, ios::in);
+	cout << file.is_open();
+	//------------**************----------------
 	file >> this->width;
 	cout << this->width << endl;
 	file >> this->height;
@@ -67,6 +92,7 @@ uint8_t Fonts::findFontFromFolder(string folder_path, fstream& file, string sear
 	if (hFile == INVALID_HANDLE_VALUE)
 		cout << "error";
 	file.open(file_dataa.cFileName, ios::in);
+	cout << file_dataa.cFileName;
 	file >> text;
 	cout << text << endl;
 	if (text == search) {
