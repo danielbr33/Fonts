@@ -22,9 +22,9 @@ void Fonts::createFont(string font, uint16_t* font_table) {
 void Fonts::readFont(string font) {
 	//------------READING JSON----------------
 	fstream json_file;
-	json_file.open("doc.txt", ios::in);
+	json_file.open("doc.json", ios::in);
 	string json_string = " ";
-	if (json_file) {
+ 	if (json_file) {
 		string line;
 		while (getline(json_file, line)) {
 			json_string += line;
@@ -36,7 +36,14 @@ void Fonts::readFont(string font) {
 	DeserializationError error = deserializeJson(doc, json_string);
 	if (error)
 		cout << error.c_str();
-	const char* path = doc[font.c_str()]["file"];
+	JsonArray array = doc["fonts"];
+	cout << array.size();
+	const char* path = 0;
+	for (JsonObject repo : array) {
+		if (repo["height"] == 18)
+			path = repo["file"].as<const char*>();
+	}
+	
 	cout << path << endl;
 	fstream file;
 	file.open((string)path, ios::in);
