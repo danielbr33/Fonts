@@ -20,6 +20,7 @@ void Fonts::createFont(string font, uint16_t* font_table) {
 }
 
 void Fonts::readFont(string font) {
+	const char* path = 0;
 	//------------READING JSON----------------
 	fstream json_file;
 	json_file.open("doc.json", ios::in);
@@ -37,8 +38,6 @@ void Fonts::readFont(string font) {
 	if (error)
 		cout << error.c_str();
 	JsonArray array = doc["fonts"];
-	cout << array.size();
-	const char* path = 0;
 	for (JsonObject repo : array) {
 		if (repo["height"] == 18)
 			path = repo["file"].as<const char*>();
