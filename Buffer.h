@@ -26,7 +26,7 @@ private:
 	uint8_t** table;
 	int buffer_width;
 	int buffer_height;
-	vector<Fonts*> Fonts;
+	vector<Fonts*> FontsAll;
 	Fonts* ActualFont;
 	uint8_t buffor_element_height;
 };

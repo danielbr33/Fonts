@@ -134,22 +134,20 @@ void Buffer::createFont() {
 		cout << error.c_str();
 	JsonArray array = doc["fonts"];
 	for (JsonObject repo : array) {
-		if (repo["height"] == 18) {
-			path = repo["file"].as<const char*>();
-			ActualFont = new Fonts();
-			ActualFont->readFont(path);
-			Fonts.push_back(ActualFont);
-			delete ActualFont;
-		}
+		path = repo["file"].as<const char*>();
+		ActualFont = new Fonts();
+		ActualFont->readFont(path);
+		FontsAll.push_back(new Fonts(*ActualFont));
+		delete ActualFont;
 	}
 }
 
 void Buffer::findFont(uint8_t height) {
 	uint8_t difference = 120;
-	for (uint8_t i = 0; i < Fonts.size; i++) {
-		if (Fonts[i]->getHeight - height <= difference) {
-			ActualFont = Fonts[i];
-			difference = Fonts[i]->getHeight - height;
+	for (uint8_t i = 0; i < FontsAll.size(); i++) {
+		if (FontsAll[i]->getHeight() - height <= difference) {
+			ActualFont = FontsAll[i];
+			difference = FontsAll[i]->getHeight() - height;
 		}
 	}
 }
