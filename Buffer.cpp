@@ -145,9 +145,10 @@ void Buffer::createFont() {
 void Buffer::findFont(uint8_t height) {
 	uint8_t difference = 120;
 	for (uint8_t i = 0; i < FontsAll.size(); i++) {
-		if (FontsAll[i]->getHeight() - height <= difference) {
+		if (fabs(FontsAll[i]->getHeight() - height) <= difference) {
 			ActualFont = FontsAll[i];
-			difference = FontsAll[i]->getHeight() - height;
+			difference = fabs(FontsAll[i]->getHeight() - height);
+			cout << (uint16_t)difference << endl;
 		}
 	}
 }
