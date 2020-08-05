@@ -1,6 +1,7 @@
 #include "Buffer.h"
 #include "bitoperations.h"
 #include "string.h"
+#include "ArduinoJson-v6.15.2.h"
 
 void Buffer::fill(Color color) {
 	for (uint8_t i = 0; i < this->buffer_height / BUFFOR_PART_HEIGHT; i++)
@@ -53,44 +54,35 @@ Buffer::Buffer(uint8_t buffer_width, uint8_t buffer_height){
 	for (uint8_t j=0; j < (this->buffer_height/BUFFOR_PART_HEIGHT); j++)
 		for (uint8_t i = 0; i < this->buffer_width; i++)
 			table[j][i] = 0;
-	font6x8_ready = 0;
-	font7x10_ready = 0;
-	font11x18_ready = 0;
+	createFont();
 }
 
 Buffer::~Buffer(){
 	delete[] table;
 }
 
-void Buffer::addLetter(uint8_t letter, Font font, Color color, uint8_t coord_X, uint8_t coord_Y) {
-	createFont(font);
-	if (font == Font6x8)
-		Actual_Font = Font_6x8;
-	else if (font == Font7x10)
-		Actual_Font = Font_7x10;
-	else if (font == Font11x18)
-		Actual_Font = Font_11x18;
-
+void Buffer::addLetter(uint8_t letter, uint8_t height, Color color, uint8_t coord_X, uint8_t coord_Y) {
+	findFont(height);
 	uint8_t number_of_verse = (uint8_t)(coord_Y/8);
 	uint8_t offset = coord_Y % 8;
 	uint8_t state;
 	uint8_t writted_horizontal_bits;
-	for (uint8_t i = 0; i < Actual_Font->getWidth(); i++) {
+	for (uint8_t i = 0; i < ActualFont->getWidth(); i++) {
 		if (coord_X + i >= this->buffer_width)
 			break;
 
 		if (color == White) {
 			if (number_of_verse < ((uint8_t)this->buffer_height / 8)) {
 				table[number_of_verse][i + coord_X] = 0;
-				table[number_of_verse][i+coord_X] |= (Actual_Font->getLetter(letter)[i] << offset);
+				table[number_of_verse][i+coord_X] |= (ActualFont->getLetter(letter)[i] << offset);
 			}
 			if ((number_of_verse + 1) < ((uint8_t)buffer_height / 8)) {
 				table[number_of_verse + 1][i + coord_X] = 0;
-				table[number_of_verse + 1][i + coord_X] |= (Actual_Font->getLetter(letter)[i] >> (BUFFOR_PART_HEIGHT - offset));
+				table[number_of_verse + 1][i + coord_X] |= (ActualFont->getLetter(letter)[i] >> (BUFFOR_PART_HEIGHT - offset));
 			}
-			if ((number_of_verse + 2) < ((uint8_t)buffer_height / 8)  && font == Font11x18) {
+			if ((number_of_verse + 2) < ((uint8_t)buffer_height / 8)  && height == 18) {
 				table[number_of_verse + 2][i + coord_X];
-				table[number_of_verse + 2][i + coord_X] |= (Actual_Font->getLetter(letter)[i] >> (2*BUFFOR_PART_HEIGHT - offset));
+				table[number_of_verse + 2][i + coord_X] |= (ActualFont->getLetter(letter)[i] >> (2*BUFFOR_PART_HEIGHT - offset));
 			}
 		}
 
@@ -98,50 +90,66 @@ void Buffer::addLetter(uint8_t letter, Font font, Color color, uint8_t coord_X, 
 			if (number_of_verse < ((uint8_t)this->buffer_height / 8)) {
 				if (table[number_of_verse][i+coord_X] == 0)
 					table[number_of_verse][i + coord_X] = ~0;
-				table[number_of_verse][i + coord_X] &= ~(Actual_Font->getLetter(letter)[i] << offset);
+				table[number_of_verse][i + coord_X] &= ~(ActualFont->getLetter(letter)[i] << offset);
 			}
 			if ((number_of_verse + 1) < ((uint8_t)buffer_height / 8)) {
 				if (table[number_of_verse + 1][i + coord_X] == 0)
 					table[number_of_verse + 1][i + coord_X] = ~0;
-				table[number_of_verse + 1][i + coord_X] &= ~(Actual_Font->getLetter(letter)[i] >> (BUFFOR_PART_HEIGHT - offset));
+				table[number_of_verse + 1][i + coord_X] &= ~(ActualFont->getLetter(letter)[i] >> (BUFFOR_PART_HEIGHT - offset));
 			}
-			if ((number_of_verse + 1) < ((uint8_t)buffer_height / 8) && font == Font11x18) {
+			if ((number_of_verse + 1) < ((uint8_t)buffer_height / 8) && height == 18) {
 				if (table[number_of_verse + 2][i + coord_X] == 0)
 					table[number_of_verse + 2][i + coord_X] = ~0;
-				table[number_of_verse + 2][i + coord_X] &= ~(Actual_Font->getLetter(letter)[i] >> (2*BUFFOR_PART_HEIGHT - offset));
+				table[number_of_verse + 2][i + coord_X] &= ~(ActualFont->getLetter(letter)[i] >> (2*BUFFOR_PART_HEIGHT - offset));
 			}
 		}
 	}
 }
 
-void Buffer::addText(char* text, Font font, Color color, uint8_t coord_X, uint8_t coord_Y) {
-	createFont(font);
-	if (font == Font6x8)
-		Actual_Font = Font_6x8;
-	else if (font == Font7x10)
-		Actual_Font = Font_7x10;
-	else if (font == Font11x18)
-		Actual_Font = Font_11x18;
+void Buffer::addText(char* text,  uint8_t height, Color color, uint8_t coord_X, uint8_t coord_Y) {
+	findFont(height);
 	for (uint8_t i = 0; i < strlen((char*)text); i++) {
-		uint8_t current_X = coord_X + i * Actual_Font->getWidth();
-		addLetter(text[i], font, color, current_X, coord_Y);
+		uint8_t current_X = coord_X + i * ActualFont->getWidth();
+		addLetter(text[i], height, color, current_X, coord_Y);
 	}
 }
 
-void Buffer::createFont(Font font) {
-	if (font == Font6x8 && font6x8_ready == 0) {
-		Font_6x8 = new Fonts();
-		Font_6x8->readFont("Font6x8");
-		font6x8_ready = 1;
+void Buffer::createFont() {
+	const char* path = 0;
+	//------------READING JSON----------------
+	fstream json_file;
+	json_file.open("doc.json", ios::in);
+	string json_string = " ";
+	if (json_file) {
+		string line;
+		while (getline(json_file, line)) {
+			json_string += line;
+		}
+		json_file.close();
 	}
-	else if(font == Font7x10 && font7x10_ready == 0){
-		Font_7x10 = new Fonts();
-		Font_7x10->readFont("Font7x10");
-		font7x10_ready = 1;
+	const int capacity = JSON_OBJECT_SIZE(3);
+	DynamicJsonDocument doc(1024);
+	DeserializationError error = deserializeJson(doc, json_string);
+	if (error)
+		cout << error.c_str();
+	JsonArray array = doc["fonts"];
+	for (JsonObject repo : array) {
+		if (repo["height"] == 18) {
+			path = repo["file"].as<const char*>();
+			ActualFont = new Fonts();
+			ActualFont->readFont(path);
+			Fonts.push_back(ActualFont);
+			delete ActualFont;
+		}
 	}
-	else if (font == Font11x18 && font11x18_ready == 0) {
-		Font_11x18 = new Fonts();
-		Font_11x18->readFont("Font11x18");
-		font11x18_ready = 1;
+}
+
+void Buffer::findFont(uint8_t height) {
+	uint8_t difference = 120;
+	for (uint8_t i = 0; i < Fonts.size; i++) {
+		if (Fonts[i]->getHeight - height <= difference) {
+			ActualFont = Fonts[i];
+			difference = Fonts[i]->getHeight - height;
+		}
 	}
 }

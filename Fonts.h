@@ -16,13 +16,11 @@ public:
 	uint32_t* getLetter(uint8_t letter);
 	uint8_t getWidth();
 	uint8_t getHeight();
-	void createFont(string font, uint16_t* font_table);
+	void createFont();
 
 private:
-	Letter** Font_6x8;
-	Letter** Font_7x10;
-	Letter** Font_11x18;
-	Letter** Actual_Font;
+	Letter** FontLetter;
+	uint16_t* fontTable;
 	uint16_t height;  //error after change on uint8_t
 	uint16_t width;
 };
